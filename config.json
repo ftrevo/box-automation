@@ -1,0 +1,7 @@
+{
+  "caixas-ja-recuperadas": 0,
+  "intervalo-movimento-personagem": 150000,
+  "intervalo-verificacao-caixa-disponivel": 60000,
+  "sair-do-jogo-ao-abrir-todas-caixas": "SIM",
+  "printar-tela-ao-abrir-caixa": "SIM"
+}
