@@ -37,7 +37,10 @@
 
 5 - Abrir um Prompt de Comando ou Windows PowerShell e entrar na pasta que você baixou o projeto
 
-6 - Executar o comando de instalação do projeto
+6 - Executar o comando de instalação do windows-build-tools
+  - npm install --global windows-build-tools
+
+7 - Executar o comando de instalação do projeto
   - npm install
 
 ## Passo a Passo de execução após a instalação
