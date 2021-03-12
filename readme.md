@@ -1,4 +1,4 @@
-## Para rodar você precisa os seguintes pontos instalados:
+## Pré-requisitos:
 
 - Node.js versão v10.24.0
   - Sugestão, usar o NVM
