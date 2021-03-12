@@ -1,30 +1,48 @@
 const { random, esc, } = require('./keyboard');
-const { findOpenBoxButton, findOKButton, findExitGameButton, informResolution, captureScreen } = require('./screen');
+const { findOpenBoxButton, findOKButton, findExitGameButton, informResolution, captureScreen, highLightRegion } = require('./screen');
 const { moveMouse, click } = require('./mouse');
 const { waitFor, loadConfig } = require('./util');
 
 const config = loadConfig();
 let boxesOppened = config.boxesRecovered;
 
-let movementInterval;
-let checkBoxInterval;
+let movementIntervalAction;
+let checkBoxIntervalAction;
+
+const exitGameAction = async () => {
+  try {
+    const exitGameButton = await findExitGameButton();
+    await highLightRegion(exitGameButton);
+    await moveMouse(exitGameButton);
+    await click();
+
+    clearInterval(movementIntervalAction);
+    clearInterval(checkBoxIntervalAction);
+
+    console.log('Script finalizado');
+  } catch (err) {
+    console.log('Erro ao clicar no EXIT GAME, tentando noamente');
+    return exitGameAction();
+  }
+}
 
 const exitGame = async () => {
   await esc();
   await waitFor(1000);
 
-  const exitGameButton = await findExitGameButton();
-  await moveMouse(exitGameButton);
-  await click();
-
-  clearInterval(movementInterval);
-  clearInterval(checkBoxInterval);
+  await exitGameAction();
 }
 
 const okBoxAction = async () => {
-  const okBoxButtonRegion = await findOKButton();
-  await moveMouse(okBoxButtonRegion);
-  await click();
+  try {
+    const okBoxButtonRegion = await findOKButton();
+    await highLightRegion(okBoxButtonRegion);
+    await moveMouse(okBoxButtonRegion);
+    await click();
+  } catch (err) {
+    console.log('Erro ao clicar no OK, tentando noamente');
+    return okBoxAction();
+  }
 
   if (config.exitOnOppeningAllBoxes && boxesOppened >= 5) {
     await exitGame();
@@ -32,10 +50,12 @@ const okBoxAction = async () => {
 }
 
 const openBoxAction = async () => {
+  console.log('OpenBox');
   let openBoxButtonRegion;
 
   try {
     openBoxButtonRegion = await findOpenBoxButton();
+    await highLightRegion(openBoxButtonRegion);
   } catch (err) {
     return;
   }
@@ -57,6 +77,7 @@ const openBoxAction = async () => {
 
 module.exports = () => {
   informResolution();
-  movementInterval = setInterval(random, config.movementInterval);
-  checkBoxInterval = setInterval(openBoxAction, config.checkBoxInterval);
+  movementIntervalAction = setInterval(random, config.movementInterval);
+  checkBoxIntervalAction = setInterval(openBoxAction, config.boxVerificationInterval);
+  console.log('Script iniciado');
 }
