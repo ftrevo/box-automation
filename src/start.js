@@ -57,6 +57,6 @@ const openBoxAction = async () => {
 
 module.exports = () => {
   informResolution();
-  movementInterval = setInterval(random, 10000);
-  checkBoxInterval = setInterval(openBoxAction, 20000);
+  movementInterval = setInterval(random, config.movementInterval);
+  checkBoxInterval = setInterval(openBoxAction, config.checkBoxInterval);
 }
