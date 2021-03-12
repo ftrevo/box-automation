@@ -1,5 +1,5 @@
 const { random, esc, } = require('./keyboard');
-const { findOpenBoxButton, findOKButton, findExitGameButton, informResolution, captureScreen, highLightRegion } = require('./screen');
+const { findOpenBoxButton, findOKButton, findExitGameButton, informResolution, captureScreen } = require('./screen');
 const { moveMouse, click } = require('./mouse');
 const { waitFor, loadConfig } = require('./util');
 
@@ -12,7 +12,6 @@ let checkBoxIntervalAction;
 const exitGameAction = async () => {
   try {
     const exitGameButton = await findExitGameButton();
-    await highLightRegion(exitGameButton);
     await moveMouse(exitGameButton);
     await click();
 
@@ -36,7 +35,6 @@ const exitGame = async () => {
 const okBoxAction = async () => {
   try {
     const okBoxButtonRegion = await findOKButton();
-    await highLightRegion(okBoxButtonRegion);
     await moveMouse(okBoxButtonRegion);
     await click();
   } catch (err) {
@@ -54,7 +52,6 @@ const openBoxAction = async () => {
 
   try {
     openBoxButtonRegion = await findOpenBoxButton();
-    await highLightRegion(openBoxButtonRegion);
   } catch (err) {
     return;
   }
