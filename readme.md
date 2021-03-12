@@ -7,6 +7,7 @@
 
 ## Arquivo de configuração: config.json
 
+```
 {
 
   "caixas-ja-recuperadas": 0,                      <-- Quantas caixas você já abriu, útil para quando você jogou um pouco depois vai ativar o bot.
@@ -20,6 +21,7 @@
   "printar-tela-ao-abrir-caixa": "SIM"             <-- Instrução para printar a tela quando abrir. As imagens estarão na pasta images.
 
 }
+```
 
 ## Passo a Passo de instalação com o NVM
 1 - Baixar o NVM
