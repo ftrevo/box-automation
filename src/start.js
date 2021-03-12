@@ -50,7 +50,6 @@ const okBoxAction = async () => {
 }
 
 const openBoxAction = async () => {
-  console.log('OpenBox');
   let openBoxButtonRegion;
 
   try {
