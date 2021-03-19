@@ -20,7 +20,7 @@ const options = [
   left, up, right, down
 ]
 
-const random = async () => {
+const moveRandomly = async () => {
   await options[Math.floor(Math.random() * 4)]();
 }
 
@@ -28,11 +28,16 @@ const esc = async () => {
   await keyboard.type(Key.Escape);
 }
 
+const windows = async () => {
+  await keyboard.type(Key.LeftSuper);
+}
+
 module.exports = {
   left,
   right,
   up,
   down,
-  random,
+  moveRandomly,
   esc,
+  windows,
 }

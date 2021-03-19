@@ -1,53 +1,35 @@
-const { random, esc, } = require('./keyboard');
-const { findOpenBoxButton, findOKButton, findExitGameButton, informResolution, captureScreen } = require('./screen');
-const { moveMouse, click } = require('./mouse');
-const { waitFor, loadConfig } = require('./util');
+const { moveRandomly } = require('./keyboard');
+const { findOpenBoxButton, informResolution, findLoginButton } = require('./screen');
+const { loadConfig } = require('./util');
+const exitGameAction = require('./actions/exit-game');
+const openBoxAction = require('./actions/open-box');
+const okBoxAction = require('./actions/ok-button');
+const turnOffAction = require('./actions/turn-off');
+const reconnectAction = require('./actions/reconnect');
+const giftBoxAction = require('./actions/gift-box');
 
 const config = loadConfig();
 let boxesOppened = config.boxesRecovered;
 
-let movementIntervalAction;
-let checkBoxIntervalAction;
+let movementInterval;
+let availableBoxCheckInterval;
+let disconnectionCheckInterval;
 
-const exitGameAction = async () => {
-  try {
-    const exitGameButton = await findExitGameButton();
-    await moveMouse(exitGameButton);
-    await click();
-
-    clearInterval(movementIntervalAction);
-    clearInterval(checkBoxIntervalAction);
-
-    console.log('Script finalizado');
-  } catch (err) {
-    console.log('Erro ao clicar no EXIT GAME, tentando noamente');
-    return exitGameAction();
-  }
+const setIntervals = () => {
+  movementInterval = setInterval(moveRandomly, config.movementInterval);
+  availableBoxCheckInterval = setInterval(checkBoxAvailable, config.boxVerificationInterval);
+  disconnectionCheckInterval = setInterval(checkDisconnection, config.disconnectionVerificationInterval);
+  console.log('Intervalos de execução definidos.');
 }
 
-const exitGame = async () => {
-  await esc();
-  await waitFor(1000);
-
-  await exitGameAction();
+const clearIntervals = () => {
+  clearInterval(movementInterval);
+  clearInterval(availableBoxCheckInterval);
+  clearInterval(disconnectionCheckInterval);
+  console.log('Intervalos de execução removidos.');
 }
 
-const okBoxAction = async () => {
-  try {
-    const okBoxButtonRegion = await findOKButton();
-    await moveMouse(okBoxButtonRegion);
-    await click();
-  } catch (err) {
-    console.log('Erro ao clicar no OK, tentando noamente');
-    return okBoxAction();
-  }
-
-  if (config.exitOnOppeningAllBoxes && boxesOppened >= 5) {
-    await exitGame();
-  }
-}
-
-const openBoxAction = async () => {
+const checkBoxAvailable = async () => {
   let openBoxButtonRegion;
 
   try {
@@ -56,24 +38,41 @@ const openBoxAction = async () => {
     return;
   }
 
-  if (openBoxButtonRegion) {
-    await moveMouse(openBoxButtonRegion);
-    await click();
+  boxesOppened = boxesOppened + 1;
+  await openBoxAction(openBoxButtonRegion, boxesOppened);
+  await okBoxAction();
 
-    boxesOppened = boxesOppened + 1;
-    console.log(`Caixa ${boxesOppened} aberta`);
+  if (config.exitOnOppeningAllBoxes && boxesOppened >= 5) {
+    clearIntervals();
 
-    await waitFor(6000);
-    await captureScreen();
-    await waitFor(1000);
+    await exitGameAction();
 
-    await okBoxAction();
+    if (config.turnOffComputer) {
+      await turnOffAction();
+    }
+
+    console.log('Script finalizado.');
   }
+}
+
+const checkDisconnection = async () => {
+  let logInRegion;
+
+  try {
+    logInRegion = await findLoginButton();
+  } catch (err) {
+    return;
+  }
+
+  console.log('Desconexão detetcada, reconectando.');
+  clearIntervals();
+  await reconnectAction(logInRegion);
+  await giftBoxAction();
+  setIntervals();
 }
 
 module.exports = () => {
   informResolution();
-  movementIntervalAction = setInterval(random, config.movementInterval);
-  checkBoxIntervalAction = setInterval(openBoxAction, config.boxVerificationInterval);
-  console.log('Script iniciado');
+  setIntervals();
+  console.log('Script iniciado.');
 }

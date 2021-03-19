@@ -16,9 +16,11 @@
 
   "intervalo-verificacao-caixa-disponivel": 60000, <-- Intervalo em milissegundos de verificação de caixa.
 
+  "intervalo-verificacao-desconexao": 6000,        <-- Intervalo em milissegundos de verificação de desconexão. Os dados de login não são preenchidos, então a caixinha de lembrar dos dados precisa estar marcada para funcionar corretamente.
+
   "sair-do-jogo-ao-abrir-todas-caixas": "SIM",     <-- Instrução para sair do jogo quanto terminar de pegar as 5 caixas diárias.
 
-  "printar-tela-ao-abrir-caixa": "SIM"             <-- Instrução para printar a tela quando abrir. As imagens estarão na pasta images.
+  "desligar-computar-ao-finalizar": "NÃO"          <-- Instrução para desligar o computador quando coletar todas as caixas.
 
 }
 ```
